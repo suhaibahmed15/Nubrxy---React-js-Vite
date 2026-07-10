@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ────────────────────────────────────────────── */
+:root {
+  /* Core Palette */
+  --ink: #050300;         /* Deep black with a microscopic hint of warmth */
+  --ink-raised: #140d05;  /* Slightly elevated dark tone */
+  --paper: #fff6ed;       /* Soft, warm off-white for text readability */
+  --line: #2a1a0f;        /* Warm border color */
+  
+  /* Brand Accents */
+  --signal-primary: #ff5e00; /* Vibrant Orange */
+  --signal-secondary: #ffb700; /* Bright Yellow */
+  
+  /* Creative Gradients */
+  --glow-gradient: linear-gradient(90deg, var(--signal-primary), var(--signal-secondary));
+  --theme-gradient: linear-gradient(135deg, var(--ink) 0%, var(--signal-primary) 50%, var(--signal-secondary) 100%);
+  
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--ink);
+  color: var(--paper);
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01" 1, "cv01" 1;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+#root {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Selection & focus ────────────────────────────────────────── */
+::selection {
+  background: var(--signal-primary);
+  color: var(--ink);
+  text-shadow: 0 1px 2px rgba(255, 183, 0, 0.4); /* Slight warm glow on selected text */
+}
+
+:focus-visible {
+  outline: 2px solid transparent; 
+  border-radius: 2px;
+  /* Double-ring focus state using the orange accent */
+  box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--signal-primary);
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--glow-gradient);
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--signal-primary);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--signal-primary) var(--ink);
+}
+
+/* ── Typographic utilities & Effects ─────────────────────────── */
+.eyebrow {
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 500;
+  /* Applies the gradient to the text itself */
+  background: var(--glow-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* New: Animated gradient text for headlines */
+.text-gradient {
+  background: var(--theme-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: gradient-shift 6s ease infinite alternate;
+}
+
+.hairline {
+  border-color: var(--line);
+}
+
+/* Fine paper-grain overlay */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.04;
+  /* Color-dodge creates a slightly more dynamic, "fiery" interaction with dark backgrounds */
+  mix-blend-mode: color-dodge; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Interactive Elements ─────────────────────────────────────── */
+/* Underline that draws in on hover, for inline text links */
+.link-draw {
+  position: relative;
+  text-decoration: none;
+  color: var(--paper);
+  transition: color 0.3s var(--ease-out);
+}
+.link-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: var(--glow-gradient);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s var(--ease-out);
+}
+.link-draw:hover {
+  color: var(--signal-secondary);
+}
+.link-draw:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* New: Ambient glow hover effect for cards or buttons */
+.ambient-glow {
+  position: relative;
+}
+.ambient-glow::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  background: var(--glow-gradient);
+  filter: blur(20px);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.4s var(--ease-out);
+}
+.ambient-glow:hover::after {
+  opacity: 0.35;
+}
+
+/* ── Motion ───────────────────────────────────────────────────── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
